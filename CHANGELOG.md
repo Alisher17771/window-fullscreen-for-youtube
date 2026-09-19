@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Exit with Esc is now optional.** On by default, so nothing changes unless it is turned
+  off in Behavior. People who use windowed fullscreen as their normal way of watching reach
+  for `Esc` to dismiss whatever YouTube put on screen and lose the whole layout instead,
+  which is a five-key round trip back. Turning it off leaves the hotkey and the player
+  button as the ways out.
+
+### Fixed
+- **`Esc` no longer leaves through the back door.** It was swallowed only on the path that
+  exits, so any build that stopped calling `setActive(false)` on it still collapsed: the key
+  reached YouTube, YouTube dropped theater mode, and the theater watcher read that as the
+  user leaving theater. It is swallowed whenever the mode is active now, except while a
+  player menu is open, where `Esc` still closes the menu.
+
 ## [0.4.1] - 2026-09-03
 
 <table>

@@ -43,6 +43,7 @@
     hideMasthead: true,
     hideSidebar: true,
     hideComments: true,
+    exitOnEscape: true,
     chatWidth: 400,
   };
 
@@ -904,6 +905,16 @@
     if (window.wfsReport) window.wfsReport(broken);
   }
 
+  // Same visibility test watchPopupState uses: the menus stay in the DOM and
+  // are hidden with display, so presence alone says nothing.
+  function isPlayerMenuOpen() {
+    const menus = document.querySelectorAll('.ytp-settings-menu, .ytp-popup');
+    for (const menu of menus) {
+      if (getComputedStyle(menu).display !== 'none' && menu.offsetParent !== null) return true;
+    }
+    return false;
+  }
+
   let pending = false;
   function scheduleWork() {
     if (pending) return;
@@ -936,9 +947,15 @@
         e.stopImmediatePropagation();
         toggle();
       } else if (e.key === 'Escape' && isActive()) {
+        // Swallowed whether or not it exits. YouTube reads Esc as "leave the
+        // enlarged layout" and drops theater mode, which watchTheaterState
+        // would then take for the user leaving theater and exit anyway, so
+        // letting the key through makes the setting below do nothing. An open
+        // player menu is the exception: there Esc still belongs to YouTube.
+        if (isPlayerMenuOpen()) return;
         e.preventDefault();
         e.stopImmediatePropagation();
-        setActive(false);
+        if (settings.exitOnEscape) setActive(false);
       }
     },
     true

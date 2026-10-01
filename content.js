@@ -364,6 +364,12 @@
     if (isActive()) notifyResize();
   }
 
+  // YouTube's player menus stay in the DOM and hide with display, so presence
+  // alone says nothing about whether one is open.
+  function isShown(el) {
+    return getComputedStyle(el).display !== 'none' && el.offsetParent !== null;
+  }
+
   let popupObserver = null;
   function watchPopupState() {
     const popup = document.querySelector('.ytp-settings-menu, .ytp-popup');
@@ -371,7 +377,7 @@
     if (popupObserver && popupObserver._target === popup) return;
     if (popupObserver) popupObserver.disconnect();
     const update = () => {
-      const open = getComputedStyle(popup).display !== 'none' && popup.offsetParent !== null;
+      const open = isShown(popup);
       document.documentElement.classList.toggle('wfs-menu-open', open && isActive());
       // Reopening the gear should land on YouTube's menu, not wherever we left off.
       if (!open && !adjustingPopup) closePanel();
@@ -773,7 +779,7 @@
   function enforcePanelState() {
     const popup = getPopup();
     if (!popup) return;
-    const visible = getComputedStyle(popup).display !== 'none' && popup.offsetParent !== null;
+    const visible = isShown(popup);
     if (!visible && !adjustingPopup) closePanel();
   }
 
@@ -930,14 +936,8 @@
     if (window.wfsReport) window.wfsReport(broken);
   }
 
-  // Same visibility test watchPopupState uses: the menus stay in the DOM and
-  // are hidden with display, so presence alone says nothing.
   function isPlayerMenuOpen() {
-    const menus = document.querySelectorAll('.ytp-settings-menu, .ytp-popup');
-    for (const menu of menus) {
-      if (getComputedStyle(menu).display !== 'none' && menu.offsetParent !== null) return true;
-    }
-    return false;
+    return Array.from(document.querySelectorAll('.ytp-settings-menu, .ytp-popup')).some(isShown);
   }
 
   let pending = false;

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   for `Esc` to dismiss whatever YouTube put on screen and lose the whole layout instead,
   which is a five-key round trip back. Turning it off leaves the hotkey and the player
   button as the ways out.
+  Thanks to [@Alisher17771](https://github.com/Alisher17771) for the idea and the code
+  ([#15](https://github.com/MashdorDev/window-fullscreen-for-youtube/pull/15)), the first
+  outside contribution to this project.
 
 ### Changed
 - **`Esc` closes an open player menu first.** With the gear menu open, `Esc` now closes

@@ -14,12 +14,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   which is a five-key round trip back. Turning it off leaves the hotkey and the player
   button as the ways out.
 
+### Changed
+- **`Esc` closes an open player menu first.** With the gear menu open, `Esc` now closes
+  the menu and leaves windowed fullscreen on. Before, it exited windowed fullscreen
+  instead.
+
+## [0.4.2] - 2026-10-01
+
+Screenshots: [docs/screenshots/0.4.2/](docs/screenshots/0.4.2/)
+
 ### Fixed
-- **`Esc` no longer leaves through the back door.** It was swallowed only on the path that
-  exits, so any build that stopped calling `setActive(false)` on it still collapsed: the key
-  reached YouTube, YouTube dropped theater mode, and the theater watcher read that as the
-  user leaving theater. It is swallowed whenever the mode is active now, except while a
-  player menu is open, where `Esc` still closes the menu.
+- **Auto windowed no longer fights the page while it is still loading.** On a fresh load
+  YouTube starts the video inside a placeholder `div#player` a few seconds before the watch
+  page exists, and the extension took that placeholder for the page. It clicked the theater
+  button over and over, checking for theater mode on an element that never gets it, and
+  could give up before the real page arrived. It now waits for the watch page before
+  turning itself on.
+- **Fewer false "YouTube broke this" reports.** The button being hidden is only reported
+  when YouTube's own controls are showing, and a theater mode failure is only reported
+  when there was a visible theater button to click.
 
 ## [0.4.1] - 2026-09-03
 
